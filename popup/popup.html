@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="popup.css">
+    <title>Smart Time Limiter</title>
+</head>
+<body>
+    <div class="popup-container">
+        <header class="popup-header">
+            <div class="header-left">
+                <span class="header-icon">⏱️</span>
+                <div>
+                    <h1>Smart Time Limiter</h1>
+                    <p class="header-date" id="currentDate"></p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" id="dashboardBtn" title="Dashboard">📊</button>
+            </div>
+        </header>
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="overview">Overview</button>
+            <button class="tab-btn" data-tab="limits">Limits</button>
+            <button class="tab-btn" data-tab="report">Report</button>
+            <button class="tab-btn" data-tab="ai">AI Tips</button>
+        </nav>
+
+        <!-- OVERVIEW TAB -->
+        <section class="tab-content active" id="tab-overview">
+            <div class="current-site-card">
+                <div class="current-site-header">
+                    <span class="label">Currently Active</span>
+                    <span class="status-badge" id="currentStatus">Tracking</span>
+                </div>
+                <h2 class="current-site-name" id="currentSiteName">—</h2>
+                <div class="current-site-progress">
+                    <div class="progress-ring-container">
+                        <svg class="progress-ring" viewBox="0 0 120 120">
+                            <circle class="progress-ring-bg" cx="60" cy="60" r="52"/>
+                            <circle class="progress-ring-fill" id="progressRing" cx="60" cy="60" r="52"/>
+                        </svg>
+                        <div class="progress-ring-text">
+                            <span class="ring-value" id="ringValue">0</span>
+                            <span class="ring-unit">min</span>
+                        </div>
+                    </div>
+                    <div class="current-site-stats">
+                        <div class="stat"><span class="stat-label">Spent</span><span class="stat-value" id="currentSpent">0m</span></div>
+                        <div class="stat"><span class="stat-label">Limit</span><span class="stat-value" id="currentLimit">None</span></div>
+                        <div class="stat"><span class="stat-label">Remaining</span><span class="stat-value" id="currentRemaining">∞</span></div>
+                    </div>
+                </div>
+                <button class="quick-limit-btn" id="quickLimitBtn">⚡ Set Quick Limit</button>
+                <div class="quick-limit-modal" id="quickLimitModal" style="display:none;">
+                    <div class="quick-limit-options">
+                        <button class="ql-btn" data-minutes="15">15m</button>
+                        <button class="ql-btn" data-minutes="30">30m</button>
+                        <button class="ql-btn" data-minutes="45">45m</button>
+                        <button class="ql-btn" data-minutes="60">1h</button>
+                        <button class="ql-btn" data-minutes="90">1.5h</button>
+                        <button class="ql-btn" data-minutes="120">2h</button>
+                    </div>
+                    <div class="custom-limit-input">
+                        <input type="number" id="customMinutes" placeholder="Custom min" min="1" max="480">
+                        <button class="ql-set-btn" id="setCustomLimit">Set</button>
+                    </div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <h3>📊 Today's Summary</h3>
+                <div class="summary-grid">
+                    <div class="summary-item"><span class="summary-value" id="totalTime">0m</span><span class="summary-label">Total</span></div>
+                    <div class="summary-item"><span class="summary-value" id="sitesVisited">0</span><span class="summary-label">Sites</span></div>
+                    <div class="summary-item"><span class="summary-value" id="limitsExceeded">0</span><span class="summary-label">Over</span></div>
+                    <div class="summary-item"><span class="summary-value" id="productivityScore">—</span><span class="summary-label">Score</span></div>
+                </div>
+            </div>
+            <div class="sites-list-card">
+                <h3>🔥 Most Used Today</h3>
+                <div class="sites-list" id="topSitesList"><div class="empty-state">No activity yet</div></div>
+            </div>
+        </section>
+
+        <!-- LIMITS TAB -->
+        <section class="tab-content" id="tab-limits">
+            <div class="limits-header">
+                <h3>⏰ Site Limits</h3>
+                <button class="add-limit-btn" id="addLimitBtn">+ Add</button>
+            </div>
+            <div class="add-limit-form" id="addLimitForm" style="display:none;">
+                <input type="text" id="limitHostname" placeholder="e.g., youtube.com" class="form-input">
+                <div class="limit-inputs">
+                    <div class="limit-field"><label>Daily Limit (min)</label><input type="number" id="limitDaily" placeholder="30" class="form-input"></div>
+                    <div class="limit-field"><label>Warn at (min)</label><input type="number" id="limitWarning" placeholder="25" class="form-input"></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" id="saveLimitBtn">Save</button>
+                    <button class="btn btn-ghost" id="cancelLimitBtn">Cancel</button>
+                </div>
+            </div>
+            <div class="limits-list" id="limitsList"><div class="empty-state">No limits set yet</div></div>
+        </section>
+
+        <!-- REPORT TAB -->
+        <section class="tab-content" id="tab-report">
+            <div class="report-header-bar">
+                <h3>📈 Daily Report</h3>
+                <button class="btn btn-export" id="exportImageBtn">📸 Export as Image</button>
+            </div>
+            <div class="report-date-picker">
+                <input type="date" id="reportDate" class="form-input">
+            </div>
+            <div class="report-summary-card" id="reportSummary"></div>
+            <div class="report-chart-card">
+                <h4>Time by Site</h4>
+                <div class="report-bars" id="reportBars"></div>
+            </div>
+            <div class="report-sites-detail" id="reportSitesDetail"></div>
+        </section>
+
+                <!-- AI TAB -->
+        <section class="tab-content" id="tab-ai">
+            <div class="ai-card">
+                <div class="ai-header">
+                    <span class="ai-icon">🤖</span>
+                    <h3>Gemini AI Coach</h3>
+                </div>
+                
+                <!-- API Key Setup -->
+                <div class="ai-setup" id="aiSetup" style="display:none;">
+                    <p class="setup-label">Enter your Gemini API key:</p>
+                    <input type="password" id="geminiApiKey" class="form-input" placeholder="AIzaSy...">
+                    <button class="btn btn-primary" id="saveApiKey">Save Key</button>
+                    <p class="setup-note">
+                        🔑 Get a free key at 
+                        <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a>
+                        <br>Data never leaves your browser. Key stored locally.
+                    </p>
+                </div>
+
+                <!-- Tip Display -->
+                <div class="ai-tip" id="aiTip">
+                    <p>Click below to get a personalized productivity tip based on your browsing patterns.</p>
+                </div>
+                
+                <div class="ai-controls">
+                    <button class="btn btn-ai" id="getAiTip">✨ Get AI Tip</button>
+                    <button class="btn btn-ghost" id="changeApiKey" style="display:none;">🔑 Change Key</button>
+                </div>
+
+                <!-- Status/Cache Info -->
+                <div class="ai-status" id="aiStatus"></div>
+            </div>
+
+            <div class="ai-insights">
+                <h4>📊 Quick Insights</h4>
+                <div class="insights-list" id="insightsList"></div>
+            </div>
+        </section>
+
+        <footer class="popup-footer">
+            <span>v1.0</span>
+            <button class="link-btn" id="openDashboard">Open Dashboard →</button>
+        </footer>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>

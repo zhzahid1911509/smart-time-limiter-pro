@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Time Limiter — Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span class="logo-icon">⏱️</span>
+                <h1>Smart Time<br>Limiter</h1>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-section="overview">
+                    <span class="nav-icon">📊</span><span>Overview</span>
+                </a>
+                <a href="#" class="nav-item" data-section="sites">
+                    <span class="nav-icon">🌐</span><span>Sites & Limits</span>
+                </a>
+                <a href="#" class="nav-item" data-section="reports">
+                    <span class="nav-icon">📈</span><span>Reports</span>
+                </a>
+                <a href="#" class="nav-item" data-section="ai">
+                    <span class="nav-icon">🤖</span><span>AI Coach</span>
+                </a>
+                <a href="#" class="nav-item" data-section="settings">
+                    <span class="nav-icon">⚙️</span><span>Settings</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="live-indicator">
+                    <span class="live-dot"></span>
+                    <span class="live-text">Live Syncing</span>
+                </div>
+                <button class="export-btn" id="exportBtn">📥 Export Data</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- ═══ OVERVIEW ═══ -->
+            <section class="section active" id="section-overview">
+                <div class="section-header">
+                    <h2>📊 Dashboard Overview</h2>
+                    <div class="header-right">
+                        <span class="live-clock" id="liveClock"></span>
+                        <span class="date-display" id="dashDate"></span>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card purple">
+                        <div class="stat-card-icon">⏱️</div>
+                        <div class="stat-card-value" id="dashTotalTime">0h 0m</div>
+                        <div class="stat-card-label">Total Today</div>
+                        <div class="stat-card-sub" id="dashTotalSub"></div>
+                    </div>
+                    <div class="stat-card blue">
+                        <div class="stat-card-icon">🌐</div>
+                        <div class="stat-card-value" id="dashSiteCount">0</div>
+                        <div class="stat-card-label">Sites Tracked</div>
+                        <div class="stat-card-sub" id="dashSiteSub"></div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-card-icon">🚨</div>
+                        <div class="stat-card-value" id="dashOverLimit">0</div>
+                        <div class="stat-card-label">Limits Exceeded</div>
+                        <div class="stat-card-sub" id="dashOverSub"></div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-card-icon">⭐</div>
+                        <div class="stat-card-value" id="dashScore">100%</div>
+                        <div class="stat-card-label">Productivity Score</div>
+                        <div class="stat-card-sub" id="dashScoreSub"></div>
+                    </div>
+                </div>
+
+                <div class="charts-row">
+                    <div class="chart-panel">
+                        <h3>📊 Today's Usage by Site</h3>
+                        <div class="horiz-bar-chart" id="dashBarChart"></div>
+                    </div>
+                    <div class="chart-panel">
+                        <h3>📈 7-Day Trend</h3>
+                        <div class="trend-chart" id="dashTrendChart"></div>
+                    </div>
+                </div>
+
+                <div class="live-panel">
+                    <div class="live-panel-header">
+                        <h3>🔴 Live Tracking</h3>
+                        <span class="active-site-badge" id="activeHostBadge">—</span>
+                    </div>
+                    <div class="live-sites" id="dashLiveSites"></div>
+                </div>
+            </section>
+
+            <!-- ═══ SITES & LIMITS ═══ -->
+            <section class="section" id="section-sites">
+                <div class="section-header">
+                    <h2>🌐 Sites & Limits</h2>
+                    <button class="btn btn-primary" id="dashAddLimitBtn">+ Add New Limit</button>
+                </div>
+
+                <div class="add-limit-modal" id="dashAddLimitModal" style="display:none;">
+                    <div class="modal-card">
+                        <h3>Set New Limit</h3>
+                        <div class="modal-form">
+                            <div class="form-group">
+                                <label>Website</label>
+                                <input type="text" id="dashLimitHost" class="form-input" placeholder="e.g., youtube.com">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Daily Limit (min)</label>
+                                    <input type="number" id="dashLimitDaily" class="form-input" placeholder="30" min="1" max="1440">
+                                </div>
+                                <div class="form-group">
+                                    <label>Warn at (min)</label>
+                                    <input type="number" id="dashLimitWarn" class="form-input" placeholder="25" min="1" max="1440">
+                                </div>
+                            </div>
+                            <div class="quick-presets">
+                                <span class="preset-label">Quick:</span>
+                                <button class="preset-btn" data-min="15">15m</button>
+                                <button class="preset-btn" data-min="30">30m</button>
+                                <button class="preset-btn" data-min="60">1h</button>
+                                <button class="preset-btn" data-min="120">2h</button>
+                            </div>
+                            <div class="modal-actions">
+                                <button class="btn btn-primary" id="dashSaveLimitBtn">Save Limit</button>
+                                <button class="btn btn-ghost" id="dashCancelLimitBtn">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sites-table" id="dashSitesTable"></div>
+            </section>
+
+            <!-- ═══ REPORTS ═══ -->
+            <section class="section" id="section-reports">
+                <div class="section-header">
+                    <h2>📈 Detailed Reports</h2>
+                    <div class="report-controls">
+                        <input type="date" id="dashReportDate" class="form-input">
+                        <button class="btn btn-export" id="dashExportImage">📸 Export Image</button>
+                    </div>
+                </div>
+
+                <div class="report-hero" id="reportHero"></div>
+
+                <div class="report-analytics-row">
+                    <div class="analytics-card" id="reportTimeBreakdown"></div>
+                    <div class="analytics-card" id="reportCategoryAnalysis"></div>
+                </div>
+
+                <div class="chart-panel report-chart">
+                    <h3>📊 Time Distribution</h3>
+                    <div class="horiz-bar-chart" id="reportBarChart"></div>
+                </div>
+
+                <div class="chart-panel report-chart">
+                    <h3>📈 Weekly Comparison</h3>
+                    <div class="trend-chart" id="reportWeeklyChart"></div>
+                </div>
+
+                <div class="report-detail-table" id="reportDetailTable"></div>
+
+                <div class="report-insights" id="reportInsights"></div>
+            </section>
+
+            <!-- ═══ AI COACH ═══ -->
+            <section class="section" id="section-ai">
+                <div class="section-header">
+                    <h2>🤖 AI Productivity Coach</h2>
+                </div>
+
+                <div class="ai-dashboard-card">
+                    <div class="ai-dash-header">
+                        <span class="ai-dash-icon">🤖</span>
+                        <div>
+                            <h3>Gemini AI Coach</h3>
+                            <p class="ai-dash-sub">Personalized tips based on your real browsing data</p>
+                        </div>
+                    </div>
+
+                    <div class="ai-key-setup" id="dashAiSetup" style="display:none;">
+                        <p>Enter your Gemini API key:</p>
+                        <div class="ai-key-row">
+                            <input type="password" id="dashGeminiKey" class="form-input" placeholder="AIzaSy...">
+                            <button class="btn btn-primary" id="dashSaveKey">Save</button>
+                        </div>
+                        <p class="ai-key-note">Free key: <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a></p>
+                    </div>
+
+                    <div class="ai-tip-display" id="dashAiTip">
+                        <p>Click below to get a personalized tip.</p>
+                    </div>
+
+                    <div class="ai-dash-controls">
+                        <button class="btn btn-ai" id="dashGetTip">✨ Get AI Tip</button>
+                        <button class="btn btn-ghost" id="dashChangeKey" style="display:none;">🔑 Change Key</button>
+                    </div>
+                    <div class="ai-dash-status" id="dashAiStatus"></div>
+                </div>
+
+                <div class="ai-insights-grid" id="dashAiInsights"></div>
+            </section>
+
+            <!-- ═══ SETTINGS ═══ -->
+            <section class="section" id="section-settings">
+                <div class="section-header">
+                    <h2>⚙️ Settings</h2>
+                    <span class="settings-saved" id="settingsSavedBadge" style="display:none;">✅ Saved!</span>
+                </div>
+
+                <div class="settings-group">
+                    <div class="settings-group-header">
+                        <span class="settings-group-icon">🛡️</span>
+                        <div>
+                            <h3>Blocking Behavior</h3>
+                            <p class="settings-group-desc">Control how sites are blocked when limits are reached</p>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Block Style</div>
+                            <div class="setting-desc">How to block sites when the daily limit is reached</div>
+                        </div>
+                        <select class="form-select" id="settBlockStyle">
+                            <option value="hard">Hard Block (Instant)</option>
+                            <option value="gradual">Gradual (Fade out)</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Warning Threshold</div>
+                            <div class="setting-desc">Show warning notification at this % of the daily limit</div>
+                        </div>
+                        <div class="setting-range-group">
+                            <input type="range" class="setting-range" id="settWarningAt" min="50" max="95" step="5" value="80">
+                            <span class="range-value" id="settWarningAtValue">80%</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Allow Extend (5 min)</div>
+                            <div class="setting-desc">Show "Add 5 Minutes" button on the block screen</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="settAllowExtend" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Block Keyboard Shortcuts</div>
+                            <div class="setting-desc">Prevent using keyboard to bypass block screen</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="settBlockKeyboard" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <div class="settings-group-header">
+                        <span class="settings-group-icon">🔔</span>
+                        <div>
+                            <h3>Notifications</h3>
+                            <p class="settings-group-desc">Control when and how you receive alerts</p>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Warning Notifications</div>
+                            <div class="setting-desc">Desktop notification when approaching limit</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="settNotifyWarning" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Block Notifications</div>
+                            <div class="setting-desc">Desktop notification when a site gets blocked</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="settNotifyBlock" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Daily Summary</div>
+                            <div class="setting-desc">Notification with yesterday's usage when limits reset</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="settNotifyDaily" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <div class="settings-group-header">
+                        <span class="settings-group-icon">📊</span>
+                        <div>
+                            <h3>On-Page Dashboard Widget</h3>
+                            <p class="settings-group-desc">The mini time tracker shown on every website</p>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Show Widget</div>
+                            <div class="setting-desc">Display the floating time tracker on web pages</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="settShowWidget" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Widget Position</div>
+                            <div class="setting-desc">Default corner for the widget</div>
+                        </div>
+                        <select class="form-select" id="settWidgetPosition">
+                            <option value="bottom-right">Bottom Right</option>
+                            <option value="bottom-left">Bottom Left</option>
+                            <option value="top-right">Top Right</option>
+                            <option value="top-left">Top Left</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Start Minimized</div>
+                            <div class="setting-desc">Widget starts collapsed on each page</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="settStartMinimized">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Only Show with Limits</div>
+                            <div class="setting-desc">Hide widget on sites that have no limit set</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="settOnlyWithLimits">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <div class="settings-group-header">
+                        <span class="settings-group-icon">📍</span>
+                        <div>
+                            <h3>Tracking</h3>
+                            <p class="settings-group-desc">Control what and how activity is tracked</p>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Track All Sites</div>
+                            <div class="setting-desc">Track time on all websites, even without limits</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="settTrackAll" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Pause When Idle</div>
+                            <div class="setting-desc">Stop counting if no mouse/keyboard activity for 5 minutes</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="settPauseIdle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Daily Reset Time</div>
+                            <div class="setting-desc">When daily usage counters reset</div>
+                        </div>
+                        <input type="time" class="form-input form-time" id="settResetTime" value="00:00">
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Whitelisted Sites</div>
+                            <div class="setting-desc">Sites that are never tracked (comma-separated)</div>
+                        </div>
+                        <textarea class="form-textarea" id="settWhitelist" placeholder="e.g., google.com, github.com" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <div class="settings-group-header">
+                        <span class="settings-group-icon">💾</span>
+                        <div>
+                            <h3>Data Management</h3>
+                            <p class="settings-group-desc">Export, import, or clear your data</p>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Keep History</div>
+                            <div class="setting-desc">How many days of browsing history to keep</div>
+                        </div>
+                        <select class="form-select" id="settHistoryDays">
+                            <option value="7">7 days</option>
+                            <option value="14">14 days</option>
+                            <option value="30" selected>30 days</option>
+                            <option value="90">90 days</option>
+                            <option value="365">1 year</option>
+                        </select>
+                    </div>
+                    <div class="data-actions">
+                        <button class="btn btn-data" id="settExportData">
+                            <span class="btn-data-icon">📥</span>
+                            <div><div class="btn-data-title">Export All Data</div><div class="btn-data-desc">Download as JSON file</div></div>
+                        </button>
+                        <button class="btn btn-data" id="settImportData">
+                            <span class="btn-data-icon">📤</span>
+                            <div><div class="btn-data-title">Import Data</div><div class="btn-data-desc">Restore from JSON file</div></div>
+                        </button>
+                        <button class="btn btn-data btn-data-danger" id="settClearToday">
+                            <span class="btn-data-icon">🗑️</span>
+                            <div><div class="btn-data-title">Clear Today's Data</div><div class="btn-data-desc">Reset all usage for today</div></div>
+                        </button>
+                        <button class="btn btn-data btn-data-danger" id="settResetAll">
+                            <span class="btn-data-icon">⚠️</span>
+                            <div><div class="btn-data-title">Reset Everything</div><div class="btn-data-desc">Delete ALL data and settings</div></div>
+                        </button>
+                    </div>
+                    <input type="file" id="settImportFile" accept=".json" style="display:none;">
+                </div>
+
+                <div class="settings-group settings-about">
+                    <div class="about-row">
+                        <span class="about-icon">⏱️</span>
+                        <div>
+                            <h3>Smart Time Limiter</h3>
+                            <p>Version 1.0.0</p>
+                        </div>
+                    </div>
+                    <div class="about-stats" id="aboutStats"></div>
+                </div>
+
+                <div class="settings-save-bar">
+                    <button class="btn btn-primary btn-save" id="settSaveAll">💾 Save All Settings</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+    <script src="dashboard.js"></script>
+</body>
+</html>
