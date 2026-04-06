@@ -177,10 +177,10 @@ You're not a machine. You don't need a wall. You need **visibility, warnings, an
 
 ## 📥 Installation
 
-### From Chrome Web Store (Coming Soon)
+### From Website
 
-1. Visit the [Chrome Web Store](https://chrome.google.com/webstore) (link coming soon)
-2. Click **"Add to Chrome"**
+1. Visit the [Smart Time Limiter Pro]([https://chrome.google.com/webstore](https://smart-time-limiter.great-site.net/))
+2. Download the extension and follow installation guide
 3. Pin the extension to your toolbar
 
 ### Manual Installation (Developer Mode)
