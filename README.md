@@ -1,4 +1,4 @@
-# ⏱️ Smart Time Limiter — Chrome Extension
+# ⏱️ Smart Time Limiter — Browser Extension
 
 <div align="center">
 
