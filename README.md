@@ -124,51 +124,47 @@ You're not a machine. You don't need a wall. You need **visibility, warnings, an
 <tr>
 <td width="50%">
 <h3>📊 Popup Overview</h3>
-<img src="screenshots/popup-overview.png" alt="Popup Overview">
+<img src="https://i.postimg.cc/7hL0pkfS/image.png" alt="Popup Overview">
 </td>
 <td width="50%">
 <h3>⏰ Setting a Limit</h3>
-<img src="screenshots/popup-limits.png" alt="Setting Limits">
+<img src="https://i.postimg.cc/x1G8yZdQ/image.png" alt="Setting Limits">
 </td>
 </tr>
 <tr>
 <td width="50%">
 <h3>📈 Daily Report</h3>
-<img src="screenshots/popup-report.png" alt="Daily Report">
+<img src="https://i.postimg.cc/d3dZMVJG/image.png" alt="Daily Report">
 </td>
 <td width="50%">
 <h3>🤖 AI Coach</h3>
-<img src="screenshots/popup-ai.png" alt="AI Coach">
+<img src="https://i.postimg.cc/13WtjqDY/image.png" alt="AI Coach">
 </td>
 </tr>
 <tr>
 <td width="50%">
 <h3>🌐 On-Page Widget</h3>
-<img src="screenshots/content-widget.png" alt="Widget">
+<img src="https://i.postimg.cc/sXPCbktP/image.png" alt="Widget">
 </td>
 <td width="50%">
 <h3>🚫 Block Screen</h3>
-<img src="screenshots/content-block.png" alt="Block Screen">
+<img src="https://i.postimg.cc/x8bM0P3q/image.png" alt="Block Screen">
 </td>
 </tr>
 <tr>
 <td width="50%">
 <h3>📊 Dashboard Overview</h3>
-<img src="screenshots/dashboard-overview.png" alt="Dashboard">
+<img src="https://i.postimg.cc/28rnpnBw/image.png" alt="Dashboard">
 </td>
 <td width="50%">
 <h3>📈 Detailed Reports</h3>
-<img src="screenshots/dashboard-reports.png" alt="Reports">
+<img src="https://i.postimg.cc/QNpnkk3X/image.png" alt="Reports">
 </td>
 </tr>
 <tr>
 <td width="50%">
 <h3>⚙️ Settings</h3>
-<img src="screenshots/dashboard-settings.png" alt="Settings">
-</td>
-<td width="50%">
-<h3>📖 User Guide</h3>
-<img src="screenshots/dashboard-guide.png" alt="User Guide">
+<img src="https://i.postimg.cc/3Rbp2qxV/image.png" alt="Settings">
 </td>
 </tr>
 </table>
