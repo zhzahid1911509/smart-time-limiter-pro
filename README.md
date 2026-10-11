@@ -175,7 +175,7 @@ You're not a machine. You don't need a wall. You need **visibility, warnings, an
 
 ### From Website
 
-1. Visit the [Smart Time Limiter Pro](https://smart-time-limiter.great-site.net/)
+1. Visit the [Smart Time Limiter Pro](https://smart-time-limiter.freedev.app/)
 2. Download the extension and follow the installation guide
 3. Pin the extension to your toolbar
 
